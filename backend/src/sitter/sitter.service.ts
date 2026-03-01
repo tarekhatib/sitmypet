@@ -108,6 +108,7 @@ export class SitterService {
         where: {
           status: 'OPEN',
           ownerId: { not: userId },
+          scheduledTime: { gte: new Date() },
           location: {
             contains: locationName,
             mode: 'insensitive',
@@ -204,6 +205,7 @@ export class SitterService {
     const where: Prisma.PostWhereInput = {
       status: 'OPEN',
       ownerId: { not: userId },
+      scheduledTime: { gte: new Date() },
     };
 
     if (search) {
@@ -393,8 +395,21 @@ export class SitterService {
   }
 
   async getSavedPosts(userId: string) {
+    await this.prisma.savedPost.deleteMany({
+      where: {
+        userId,
+        post: { scheduledTime: { lt: new Date() } },
+      },
+    });
+
     const savedPosts = await this.prisma.savedPost.findMany({
-      where: { userId },
+      where: {
+        userId,
+        post: {
+          status: 'OPEN',
+          scheduledTime: { gte: new Date() },
+        },
+      },
       include: {
         post: {
           include: {

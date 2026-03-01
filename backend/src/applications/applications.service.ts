@@ -132,6 +132,12 @@ export class ApplicationsService {
       );
     }
 
+    if (application.post.scheduledTime < new Date()) {
+      throw new BadRequestException(
+        'Cannot accept application: this post has already expired',
+      );
+    }
+
     if (!application.post.petId) {
       throw new BadRequestException(
         'Cannot accept application: Post is missing an associated pet ID',
