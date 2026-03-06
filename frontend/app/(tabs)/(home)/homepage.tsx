@@ -270,14 +270,23 @@ export default function Sitter() {
                             <Text className={"text-2xl ml-8 text-[#0A0A0A]"}>
                                 {role === "SITTER" ? "Client History" : "Pet Sitters History"}
                             </Text>
-                            <Link href={"/recentClients"} className={"mr-8"} disabled={clientFound.length <= 0}>
-                                <Text
-                                    className={"text-lg font-bold  text-[#3944D5]"}
-                                    style={clientFound.length > 0 ? {} : {color: "#AAAAAA"}}
-                                >
-                                    See all
-                                </Text>
-                            </Link>
+                            {role === "SITTER" ?
+                                <Link href={"/recentClients"} className={"mr-8"} disabled={clientFound.length <= 0}>
+                                    <Text
+                                        className={"text-lg font-bold  text-[#3944D5]"}
+                                        style={clientFound.length > 0 ? {} : {color: "#AAAAAA"}}
+                                    >
+                                        See all
+                                    </Text>
+                                </Link> :
+                                <Link href={"/recentSitters"} className={"mr-8"} disabled={clientFound.length <= 0}>
+                                    <Text
+                                        className={"text-lg font-bold  text-[#3944D5]"}
+                                        style={clientFound.length > 0 ? {} : {color: "#AAAAAA"}}
+                                    >
+                                        See all
+                                    </Text>
+                                </Link>}
                         </View>
                         {loading ? (
                             <View className="flex flex-row pl-5">
