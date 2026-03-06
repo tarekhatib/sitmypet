@@ -11,8 +11,10 @@ type Service = {
 type TodaysBooking = {
     id: string;
     location: string;
-    ownerImageURL: string;
-    ownerName: string;
+    ownerImageURL?: string;
+    ownerName?: string;
+    sitterImageURL?: string;
+    sitterName?: string;
     petName: string;
     service: Service;
     time: string;
@@ -45,14 +47,14 @@ const TodaysBookingCard = (props: TodaysBooking) => {
             <View className={"flex-row flex w-full justify-between items-center "}>
                 <View className={"flex flex-row"}>
                     <Image
-                        source={{uri: props.ownerImageURL}}
+                        source={props.ownerName ? { uri: props.ownerImageURL } : { uri: props.sitterImageURL }}
                         alt="Home Image"
                         className={"w-12 h-12 rounded-full"}
                         resizeMode={"cover"}
                     />
                     <View className={"flex flex-col ml-3"}>
                         <Text className={"text-base text-[#0A0A0A] text-left"}>
-                            {props.ownerName}
+                            {props.ownerName ? props.ownerName : props.sitterName}
                         </Text>
                         <Text className={"text-sm text-gray-500 text-left"}>
                             {props.petName}

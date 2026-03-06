@@ -4,16 +4,18 @@ import {router} from "expo-router";
 
 type ClientHistory = {
     id: string;
-    ownerName: string;
-    ownerImageUrl: string;
+    ownerName?: string;
+    ownerImageUrl?: string;
+    sitterName?: string;
+    sitterImageUrl?: string;
 }
 
 const ClientHistoryCard = (props:ClientHistory) => {
-    const fName = props.ownerName.split(" ")[0]
+    const fName = props.ownerName ? (props.ownerName as string).split(" ")[0] : (props.sitterName as string).split(" ")[0];
   return (
     <TouchableOpacity className={"flex flex-col w-20 items-center ml-3"} onPress={() => router.push(`/users/${props.id}`)}>
       <Image
-        source={{ uri: props.ownerImageUrl }}
+        source={props.ownerName ? { uri: props.ownerImageUrl } : { uri: props.sitterImageUrl }}
         alt="Home Image"
         className={"w-16 h-16 rounded-full"}
         resizeMode={"cover"}

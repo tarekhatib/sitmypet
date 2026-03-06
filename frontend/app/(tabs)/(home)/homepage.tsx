@@ -51,15 +51,19 @@ type NearbySitter = {
 
 type ClientHistory = {
     id: string;
-    ownerName: string;
-    ownerImageUrl: string;
+    ownerName?: string;
+    ownerImageUrl?: string;
+    sitterName?: string;
+    sitterImageUrl?: string;
 };
 
 type TodaysBooking = {
     id: string;
     location: string;
-    ownerImageURL: string;
-    ownerName: string;
+    ownerImageURL?: string;
+    ownerName?: string;
+    sitterImageURL?: string;
+    sitterName?: string;
     petName: string;
     service: Service;
     time: string;
