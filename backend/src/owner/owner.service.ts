@@ -40,6 +40,7 @@ export class OwnerService {
       id: booking.id,
       sitterName: `${booking.sitter.firstname} ${booking.sitter.lastname}`,
       sitterImageURL: booking.sitter.profileImageUrl ?? undefined,
+      petName: booking.pet.name,
       service: {
         id: booking.service.id,
         name: booking.service.name,

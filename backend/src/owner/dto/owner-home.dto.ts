@@ -5,6 +5,7 @@ export class TodaysBookingDto {
   status: BookingStatus;
   sitterName: string;
   sitterImageURL?: string;
+  petName: string;
   service: {
     id: string;
     name: string;
