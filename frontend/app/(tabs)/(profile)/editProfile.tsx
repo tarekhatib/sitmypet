@@ -111,7 +111,6 @@ const EditProfile = () => {
                 lastname: user?.lastname,
                 location: userLocation
             });
-            console.log(res.data);
             await SecureStore.setItemAsync("profileImageUrl", res.data.profileImageUrl as string);
         } catch (e) {
             setStatus({type: "error", message: "An error has occurred."});

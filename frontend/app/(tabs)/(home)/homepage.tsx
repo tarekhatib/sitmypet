@@ -39,6 +39,16 @@ type NearbyPost = {
     reviewCount: number;
 };
 
+type NearbySitter = {
+    id: string;
+    sitterName: string;
+    sitterImageUrl: string;
+    location: string;
+    rating: number;
+    reviewCount: number;
+    isSaved: boolean;
+};
+
 type ClientHistory = {
     id: string;
     ownerName: string;
@@ -84,7 +94,8 @@ export default function Sitter() {
     });
     const [bookingFound, setBookingFound] = useState<TodaysBooking[]>([]);
     const [clientFound, setClientFound] = useState<ClientHistory[]>([]);
-    const [nearYouFound, setNearYouFound] = useState<NearbyPost[]>([]);
+    const [nearbyPostsFound, setNearbyPostsFound] = useState<NearbyPost[]>([]);
+    const [nearbySittersFound, setNearbySittersFound] = useState<NearbySitter[]>([]);
     const [loading, setIsLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
 
@@ -94,12 +105,12 @@ export default function Sitter() {
             const userRole = await SecureStore.getItemAsync("role");
             if (userRole === "SITTER") {
                 const res = await api.get("/sitter/home");
-                setNearYouFound(res.data.nearbyPosts ?? []);
+                setNearbyPostsFound(res.data.nearbyPosts ?? []);
                 setClientFound(res.data.recentClients ?? []);
                 setBookingFound(res.data.todaysBookings ?? []);
             } else {
                 const res = await api.get("/owner/home");
-                setNearYouFound(res.data.nearbySitters ?? []);
+                setNearbySittersFound(res.data.nearbySitters ?? []);
                 setClientFound(res.data.recentSitters ?? []);
                 setBookingFound(res.data.todaysBookings ?? []);
             }
@@ -147,7 +158,8 @@ export default function Sitter() {
     useEffect(() => {
         setBookingFound([]);
         setClientFound([]);
-        setNearYouFound([]);
+        setNearbyPostsFound([]);
+        setNearbySittersFound([]);
         getCachedUser();
         getUser();
         fetchHomeData();
@@ -307,18 +319,29 @@ export default function Sitter() {
                         >
                             <Text
                                 className={"text-2xl ml-8 text-[#0A0A0A]"}>{role === "SITTER" ? "Near You" : "Pet Sitters Near You"}</Text>
-                            <Link
+                            {role === "SITTER" ? (<Link
                                 href={"/sitterNearYou"}
                                 className={"mr-8"}
-                                disabled={nearYouFound.length <= 0}
+                                disabled={(nearbyPostsFound.length <= 0 && nearbySittersFound.length <= 0)}
                             >
                                 <Text
                                     className={"text-lg font-bold  text-[#3944D5]"}
-                                    style={nearYouFound.length > 0 ? {} : {color: "#AAAAAA"}}
+                                    style={nearbyPostsFound.length > 0 ? {} : {color: "#AAAAAA"}}
                                 >
                                     See all
                                 </Text>
-                            </Link>
+                            </Link>) : <Link
+                                href={"/ownerNearYou"}
+                                className={"mr-8"}
+                                disabled={nearbySittersFound.length <= 0}
+                            >
+                                <Text
+                                    className={"text-lg font-bold  text-[#3944D5]"}
+                                    style={nearbySittersFound.length > 0 ? {} : {color: "#AAAAAA"}}
+                                >
+                                    See all
+                                </Text>
+                            </Link>}
                         </View>
                         {loading ? (
                             <View className="flex flex-row mb-28">
@@ -329,9 +352,9 @@ export default function Sitter() {
                                     <SitterNearYouCardLoading/>
                                 </View>
                             </View>
-                        ) : nearYouFound.length > 0 ? (role === "SITTER" ?
+                        ) : (nearbyPostsFound.length > 0 || nearbySittersFound.length > 0) ? (role === "SITTER" ?
                                 <FlatList
-                                    data={nearYouFound}
+                                    data={nearbyPostsFound}
                                     horizontal={true}
                                     className={"w-full mb-10"}
                                     showsHorizontalScrollIndicator={false}
@@ -342,13 +365,13 @@ export default function Sitter() {
                                         </View>
                                     )}
                                 /> : <FlatList
-                                    data={nearYouFound}
+                                    data={nearbySittersFound}
                                     horizontal={true}
                                     className={"w-full mb-10"}
                                     showsHorizontalScrollIndicator={false}
                                     keyExtractor={(item) => item.id}
                                     renderItem={({item}) => (
-                                        <View className="w-[300px] h-56 pl-8">
+                                        <View className="w-[300px] h-40 pl-8">
                                             <OwnerNearYouCard {...item} />
                                         </View>
                                     )}

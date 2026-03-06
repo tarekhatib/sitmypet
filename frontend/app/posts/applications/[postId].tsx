@@ -46,7 +46,6 @@ const PostDetails = () => {
         try {
             setLoading(true);
             const res = await api.get(`/applications/${postId}`);
-            console.log(res.data)
             setApplications(res.data);
         } catch (error) {
             console.error(error);

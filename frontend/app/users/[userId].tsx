@@ -100,7 +100,6 @@ const UserProfile = () => {
             setLoading(true);
             try {
                 const res = await api.get(`users/${userId}/profile`);
-                console.log(res.data);
                 setUser(res.data);
                 if (res.data.ownerInfo.previousRating) {
                     fillStars(res.data.ownerInfo.previousRating - 4);
