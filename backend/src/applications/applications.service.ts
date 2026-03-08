@@ -170,6 +170,55 @@ export class ApplicationsService {
     });
   }
 
+  async getOwnerRequests(ownerId: string) {
+    return this.prisma.application.findMany({
+      where: {
+        post: {
+          ownerId,
+          status: 'OPEN',
+        },
+      },
+      select: {
+        id: true,
+        status: true,
+        createdAt: true,
+        post: {
+          select: {
+            id: true,
+            title: true,
+            location: true,
+            duration: true,
+            service: {
+              select: {
+                name: true,
+              },
+            },
+          },
+        },
+        sitter: {
+          select: {
+            id: true,
+            firstname: true,
+            lastname: true,
+            profileImageUrl: true,
+            profile: {
+              select: {
+                location: {
+                  select: {
+                    name: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+  }
+
   async rejectApplication(applicationId: string, ownerId: string) {
     const application = await this.prisma.application.findUnique({
       where: { id: applicationId },

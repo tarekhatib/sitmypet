@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { OwnerService } from './owner.service';
 import { CreatePetDto } from './dto/create-pet.dto';
 import { R2Service } from '../storage/r2.service';
+import { ApplicationsService } from '../applications/applications.service';
 
 @UseGuards(JwtAuthGuard)
 @Controller('owner')
@@ -26,7 +27,13 @@ export class OwnerController {
   constructor(
     private readonly ownerService: OwnerService,
     private readonly r2Service: R2Service,
+    private readonly applicationsService: ApplicationsService,
   ) {}
+
+  @Get('requests')
+  async getRequests(@Req() req: { user: { sub: string } }) {
+    return this.applicationsService.getOwnerRequests(req.user.sub);
+  }
 
   @Get('home')
   async getHome(
