@@ -30,12 +30,15 @@ const TodaysBookings = () => {
     const [unCompleted, setUnCompleted] = useState<AppointmentList>([]);
     const [isFutureOpen, setIsFutureOpen] = useState(true);
     const [isPastOpen, setIsPastOpen] = useState(true);
+    const [role, setRole] = useState("");
 
 
     useEffect(() => {
         const getBookings = async () => {
             setLoading(true);
             try {
+                const tempRole = await SecureStore.getItemAsync("role");
+                setRole(tempRole as string);
                 const res = await api.get("/bookings");
                 const allBookings: AppointmentList = res.data;
                 const now = new Date();

@@ -73,6 +73,20 @@ const CreatePost = () => {
         try {
             const res = await api.post("/posts", formData);
             setStatus({message: "Post uploaded successfully.", type: "success"});
+            setFormData({
+                title: "",
+                description: "",
+                petId: "",
+                scheduledTime: "",
+                duration: "",
+                price: 0,
+                imageUrl: "",
+                location: "",
+                serviceName: ""
+            })
+            setSelectedPet(null)
+            setImageUri(null)
+            setDate(null)
         } catch (e: any) {
             if (e.status === 400) {
                 setStatus({message: "Please fill out all fields.", type: "error"});
@@ -89,6 +103,21 @@ const CreatePost = () => {
     useFocusEffect(useCallback(() => {
         const fetchLoc = async () => {
             setFetching(true);
+            setStatus({message: "", type: ""})
+            setFormData({
+                title: "",
+                description: "",
+                petId: "",
+                scheduledTime: "",
+                duration: "",
+                price: 0,
+                imageUrl: "",
+                location: "",
+                serviceName: ""
+            })
+            setDate(null)
+            setSelectedPet(null)
+            setImageUri(null)
             try {
                 const res = await api.get("/users/me");
                 if (res.data.location === null) {
