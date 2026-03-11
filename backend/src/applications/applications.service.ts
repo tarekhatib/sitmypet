@@ -5,9 +5,14 @@ import {
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 
+import { NotificationsService } from '../notifications/notifications.service';
+
 @Injectable()
 export class ApplicationsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationsService: NotificationsService,
+  ) {}
 
   async apply(postId: string, sitterId: string) {
     const post = await this.prisma.post.findUnique({
@@ -29,22 +34,28 @@ export class ApplicationsService {
       throw new BadRequestException('Already applied to this job');
     }
 
-    return this.prisma.application.create({
+    const application = await this.prisma.application.create({
       data: {
         postId,
         sitterId,
         status: 'PENDING',
         updatedAt: new Date(),
       },
-      select: {
-        id: true,
-        postId: true,
-        sitterId: true,
-        status: true,
-        createdAt: true,
-        updatedAt: true,
+      include: {
+        post: true,
+        sitter: true,
       },
     });
+
+    await this.notificationsService.createNotification(
+      post.ownerId,
+      'NEW_APPLICATION',
+      'New Application',
+      `${application.sitter.firstname} applied to your post titled "${post.title}"`,
+      { applicationId: application.id, postId: post.id },
+    );
+
+    return application;
   }
 
   async withdraw(postId: string, sitterId: string) {
@@ -138,7 +149,13 @@ export class ApplicationsService {
       );
     }
 
-    return this.prisma.$transaction(async (tx) => {
+    if (!application.post.petId) {
+      throw new BadRequestException(
+        'Cannot accept application: Post is missing an associated pet ID',
+      );
+    }
+
+    const result = await this.prisma.$transaction(async (tx) => {
       const booking = await tx.booking.create({
         data: {
           sitterId: application.sitterId,
@@ -162,6 +179,20 @@ export class ApplicationsService {
 
       return booking;
     });
+
+    const owner = await this.prisma.user.findUnique({
+      where: { id: ownerId },
+    });
+
+    await this.notificationsService.createNotification(
+      application.sitterId,
+      'APPLICATION_ACCEPTED',
+      'Application Accepted',
+      `${owner?.firstname} accepted your application for the post "${application.post.title}"`,
+      { bookingId: result.id },
+    );
+
+    return result;
   }
 
   async getOwnerRequests(ownerId: string) {
@@ -234,6 +265,18 @@ export class ApplicationsService {
     await this.prisma.application.delete({
       where: { id: applicationId },
     });
+
+    const owner = await this.prisma.user.findUnique({
+      where: { id: ownerId },
+    });
+
+    await this.notificationsService.createNotification(
+      application.sitterId,
+      'APPLICATION_REJECTED',
+      'Application Rejected',
+      `${owner?.firstname} rejected your application for the post "${application.post.title}"`,
+      { postId: application.postId },
+    );
 
     return { success: true };
   }

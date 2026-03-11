@@ -7,6 +7,7 @@ import {
 import { Role } from '@prisma/client';
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationsService } from '../notifications/notifications.service';
 
 const userSelect = {
   id: true,
@@ -20,7 +21,10 @@ const userSelect = {
 
 @Injectable()
 export class UsersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly notificationsService: NotificationsService,
+  ) {}
 
   async createUser(data: {
     firstname: string;
@@ -669,7 +673,7 @@ export class UsersService {
         'You can only review users you have worked with in a completed job.',
       );
     }
-    return this.prisma.review.upsert({
+    const review = await this.prisma.review.upsert({
       where: {
         bookingId: booking.id,
       },
@@ -681,5 +685,19 @@ export class UsersService {
         rating,
       },
     });
+
+    const reviewer = await this.prisma.user.findUnique({
+      where: { id: reviewerId },
+    });
+
+    await this.notificationsService.createNotification(
+      targetUserId,
+      'NEW_REVIEW',
+      'New Review Received',
+      `${reviewer?.firstname} left you a ${rating}-star review for your recent booking.`,
+      { bookingId: booking.id },
+    );
+
+    return review;
   }
 }
