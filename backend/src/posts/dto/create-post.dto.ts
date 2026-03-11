@@ -17,8 +17,7 @@ export class CreatePostDto {
   description: string;
 
   @IsString()
-  @IsOptional()
-  petId?: string;
+  petId: string;
 
   @IsDateString()
   scheduledTime: string;

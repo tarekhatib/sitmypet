@@ -14,6 +14,7 @@ import { StorageModule } from './storage/storage.module';
 import { BookingsModule } from './bookings/bookings.module';
 import { ApplicationsModule } from './applications/applications.module';
 import { OwnerModule } from './owner/owner.module';
+import { NotificationsModule } from './notifications/notifications.module';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { OwnerModule } from './owner/owner.module';
     StorageModule,
     BookingsModule,
     ApplicationsModule,
+    NotificationsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
