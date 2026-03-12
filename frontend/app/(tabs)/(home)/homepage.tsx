@@ -92,6 +92,7 @@ type cachedUser = {
 export default function Sitter() {
     const [user, setUser] = useState<User | null>(null);
     const [role, setRole] = useState<string>("");
+    const [unreadCount, setUnreadCount] = useState(0);
     const [cachedUser, setCachedUser] = useState<cachedUser | null>({
         profileImageUrl: "https://pub-4f8704924751443bbd3260d113d11a8f.r2.dev/uploads/pfps/default_pfp.png",
         firstname: "Guest"
@@ -109,11 +110,13 @@ export default function Sitter() {
             const userRole = await SecureStore.getItemAsync("role");
             if (userRole === "SITTER") {
                 const res = await api.get("/sitter/home");
+                setUnreadCount(res.data.unreadCount);
                 setNearbyPostsFound(res.data.nearbyPosts ?? []);
                 setClientFound(res.data.recentClients ?? []);
                 setBookingFound(res.data.todaysBookings ?? []);
             } else {
                 const res = await api.get("/owner/home");
+                setUnreadCount(res.data.unreadCount);
                 setNearbySittersFound(res.data.nearbySitters ?? []);
                 setClientFound(res.data.recentSitters ?? []);
                 setBookingFound(res.data.todaysBookings ?? []);
@@ -198,7 +201,7 @@ export default function Sitter() {
                             onPress={() => router.push("/notifications")}
                         >
                             <Image
-                                source={require("../../../assets/icons/bell-red.png")}
+                                source={unreadCount === 0 ? require("../../../assets/icons/bell.png") : require("../../../assets/icons/bell-red.png")}
                                 alt="Home Image"
                                 className={"w-8 h-8 rounded-full"}
                                 resizeMode={"cover"}
