@@ -59,6 +59,7 @@ type Post = {
 const PostDetails = () => {
     const {postId} = useLocalSearchParams<{ postId: string }>();
     const [post, setPost] = useState<Post>();
+    const [role, setRole] = useState("");
     const [expired, setExpired] = useState(true);
     const [loading, setLoading] = useState<boolean>(false);
     const [deleting, setDeleting] = useState<boolean>(false);
@@ -189,6 +190,8 @@ const PostDetails = () => {
     useEffect(() => {
         const getUserId = async () => {
             const id = await SecureStore.getItemAsync("id");
+            const rl = await SecureStore.getItemAsync("role");
+            setRole(role as string);
             setUserId(id as string);
         }
         getUserId();
@@ -306,10 +309,11 @@ const PostDetails = () => {
                 <TouchableOpacity
                     className={`w-full h-14 ${isApplied ? "bg-[#E7E8FF]" : expired ? "bg-gray-200" : "bg-[#3944D5]"} rounded-full flex items-center justify-center`}
                     onPress={handeApplication}
-                    disabled={expired}
+                    disabled={(expired || role === "OWNER")}
                 >
                     {applying ? <ActivityIndicator size="small" color={"#ffffff"}/> : expired ? <Text
-                        className={"text-lg text-gray-500 font-semibold"}>Post Expired</Text> : !isApplied ?
+                        className={"text-lg text-gray-500 font-semibold"}>Post Expired</Text> : role === "OWNER" ? <Text
+                        className={"text-lg text-gray-500 font-semibold"}>{"Can't apply as owner"}</Text> : !isApplied ?
                         <Text className={"text-lg font-bold text-white"}>Apply to job</Text> :
                         <Text className={`text-lg font-bold text-[#3944D5]`}>Withdraw application</Text>}
                 </TouchableOpacity>
