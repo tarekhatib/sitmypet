@@ -21,6 +21,7 @@ type Notification = {
     postId: string | null;
 
     userId: string;
+    sender: any;
 
     isRead: boolean;
     readAt: string | null;
@@ -66,7 +67,7 @@ const Notifications = () => {
                     />
                     <Text className={"text-2xl text-[#0a0a0a]"}>Inbox</Text>
                 </View>
-                {/* Inbox Notifications */}
+
                 <View className={"flex w-full"}>
                     <FlatList
                         data={appNotifications}
@@ -74,11 +75,11 @@ const Notifications = () => {
                         renderItem={({item}) => (
                             <View className={"flex flex-row items-center mt-6"}>
                                 <Image
-                                    source={require("../assets/images/pfp.jpg")}
+                                    source={{uri: item.sender.profileImageUrl}}
                                     className={"w-16 h-16 mr-3 rounded-full"}
                                 />
                                 <View className={"flex justify-between flex-1"}>
-                                    <Text className={"text-2xl text-[#0a0a0a]"}>{item.title}</Text>
+                                    <Text className={"text-2xl text-[#0a0a0a]"}>{item.type === "APPLICATION_ACCEPTED" ? item.title : item.sender.firstname + " " + item.sender.lastname }</Text>
                                     <Text className={"text-md text-[#666666]"} numberOfLines={1}>
                                         {item.message}
                                     </Text>
@@ -99,12 +100,10 @@ const Notifications = () => {
                         showsVerticalScrollIndicator={false}
                     />
                 </View>
-                {/* Inbox View All Button */}
                 <TouchableOpacity
                     className="w-[36%] ml-[32%] bg-[#3944D5] h-10 rounded-full flex flex-row items-center justify-center mt-6 mb-4">
                     <Text className="text-white text-md font-bold">View All</Text>
                 </TouchableOpacity>
-                {/* Reviews Header */}
                 <View className={"flex flex-row items-center"}>
                     <Image
                         source={require("../assets/icons/half-review.png")}
@@ -112,7 +111,7 @@ const Notifications = () => {
                     />
                     <Text className={"text-2xl text-[#0a0a0a]"}>Reviews</Text>
                 </View>
-                {/* Reviews Notifications */}
+
                 <View className={"flex w-full"}>
                     <FlatList
                         data={reviewNotifications}
@@ -120,12 +119,12 @@ const Notifications = () => {
                         renderItem={({item}) => (
                             <View className={"flex flex-row items-center mt-6"}>
                                 <Image
-                                    source={require("../assets/images/pfp.jpg")}
+                                    source={{uri: item.sender.profileImageUrl}}
                                     className={"w-16 h-16 mr-6 rounded-full"}
                                 />
                                 <View className={"flex justify-between flex-1"}>
                                     <Text className={"text-xl text-[#0a0a0a]"}>
-                                        {item.title}
+                                        {item.sender.firstname + " " + item.sender.lastname}
                                     </Text>
                                     <Text className={"text-md text-[#666666]"} numberOfLines={1}>
                                         {item.message}
