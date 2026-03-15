@@ -102,7 +102,12 @@ export default function VerifyPasswordReset({
         await SecureStore.setItemAsync("passResetToken", String(newOtp));
         router.push("/(auth)/resetPassword");
       } catch (error: any) {
-        setError("Invalid OTP, please try again.");
+          if (error.status === 503) {
+              alert("Server error, please try again later.");
+          } else {
+              console.log(error)
+                setError("Invalid OTP, please try again.");
+          }
       } finally {
         setLoading(false);
       }
@@ -119,7 +124,12 @@ export default function VerifyPasswordReset({
       });
       startResendCooldown();
     } catch (error: any) {
-      setError("Please wait before resending another OTP.");
+        if (error.status === 503) {
+            alert("Server error, please try again later.");
+        } else {
+            console.log(error)
+            setError("Please wait before resending another OTP.");
+        }
     }
   };
 

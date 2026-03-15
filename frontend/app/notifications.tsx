@@ -48,8 +48,13 @@ const Notifications = () => {
                 const res = await api.get("/notifications");
                 setAppNotifications(res.data.notifications.filter((noti: Notification) => noti.type !== "NEW_REVIEW"));
                 setReviewNotifications(res.data.notifications.filter((noti: Notification) => noti.type === "NEW_REVIEW"));
-            } catch (e) {
-                console.error(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }
@@ -73,8 +78,13 @@ const Notifications = () => {
         try {
             const res = await api.patch("/notifications/read-all");
             await SecureStore.setItemAsync("readAll", "TRUE");
-        } catch (e) {
-            console.error(e);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         }
     }
 
@@ -93,8 +103,13 @@ const Notifications = () => {
                     isRead: item.id === notificationId ? true : item.isRead
                 }))
             );
-        } catch (e) {
-            console.log(e);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         }
     }
 

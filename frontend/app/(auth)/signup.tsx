@@ -65,8 +65,13 @@ const SignUp = () => {
         await SecureStore.setItemAsync("lastname", String(formData.lastname));
         await SecureStore.setItemAsync("email", String(formData.email));
         router.push("/(auth)/verifyEmail");
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+          if (error.status === 503) {
+              alert("Server error, please try again later.");
+              router.replace("/homeAuth")
+          } else {
+              console.log(error)
+          }
       } finally {
         setLoading(false);
       }

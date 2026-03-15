@@ -7,7 +7,7 @@ import * as SecureStore from "expo-secure-store";
 import api from "@/config/api";
 import TodaysBookingCardLoading from "@/components/TodaysBookingCardLoading";
 import SitterNearYouCardLoading from "@/components/SitterNearYouCardLoading";
-import {useFocusEffect} from "expo-router";
+import {router, useFocusEffect} from "expo-router";
 
 type NearbySitter = {
     id: string;
@@ -29,8 +29,13 @@ const OwnerNearYou = () => {
         try {
             const res = await api.get("/owner/home");
             setNearbySitters(res.data.nearbySitters ?? []);
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setLoading(false);
         }

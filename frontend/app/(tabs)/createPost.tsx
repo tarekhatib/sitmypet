@@ -90,8 +90,9 @@ const CreatePost = () => {
         } catch (e: any) {
             if (e.status === 400) {
                 setStatus({message: "Please fill out all fields.", type: "error"});
-            } else if (e.status === 500) {
+            } else if (e.status === 500 || e.status === 503) {
                 setStatus({message: "Server error, please try again later.", type: "error"});
+                router.push("/homeAuth")
             } else {
                 setStatus({message: "An error has occurred.", type: "error"});
             }
@@ -130,8 +131,13 @@ const CreatePost = () => {
                 } else {
                     setFormData(prev => ({...prev, location: res.data.location.name}));
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (e: any) {
+                if (e.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(e)
+                }
             }
         }
         const fetchPets = async () => {
@@ -146,8 +152,13 @@ const CreatePost = () => {
                 } else {
                     setPets(res.data);
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (e: any) {
+                if (e.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(e)
+                }
             } finally {
                 setFetching(false);
             }
@@ -196,7 +207,10 @@ const CreatePost = () => {
         } catch (e: any) {
             if (e.status === 400) {
                 setStatus({message: "Invalid image format or size.", type: "error"});
-            } else {
+            } else if (e.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            }else {
                 setStatus({message: "An error has occurred.", type: "error"});
             }
         } finally {

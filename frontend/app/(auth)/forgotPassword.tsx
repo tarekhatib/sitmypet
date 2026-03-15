@@ -35,7 +35,13 @@ export default function OtpInput({
         await SecureStore.setItemAsync("passResetEmail", email);
         router.push("/(auth)/verifyPasswordReset");
       } catch (error: any) {
-        setError("Email not found.");
+          if (error.status === 503) {
+              alert("Server error, please try again later.");
+              router.replace("/homeAuth")
+          } else {
+              setError("Email not found.");
+              console.log(error)
+          }
       } finally {
         setLoading(false);
       }

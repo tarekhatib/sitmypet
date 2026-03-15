@@ -43,7 +43,7 @@ async function clearAuthData() {
         await SecureStore.deleteItemAsync("email");
         await SecureStore.deleteItemAsync("isVerified");
     } catch (error) {
-        console.error("Failed to clear auth data:", error);
+        console.log("Failed to clear auth data:", error);
     }
 }
 

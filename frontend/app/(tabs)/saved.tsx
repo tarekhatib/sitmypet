@@ -47,8 +47,13 @@ export default function Saved() {
     try {
       const res = await api.get("/sitter/saved-posts");
       setPosts(res.data.posts ?? []);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+        if (error.status === 503) {
+            alert("Server error, please try again later.");
+            router.replace("/homeAuth")
+        } else {
+            console.log(error)
+        }
     } finally {
       setLoading(false);
     }

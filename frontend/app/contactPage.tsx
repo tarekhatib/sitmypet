@@ -36,8 +36,12 @@ const ContactPage = () => {
         setLoading(true);
         const res = await api.post(`/contact`, formData);
         setIsSent(true);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+          if (error.status === 503) {
+              alert("Server error, please try again later.");
+          } else {
+              console.log(error)
+          }
       } finally {
         setLoading(false);
       }

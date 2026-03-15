@@ -55,8 +55,13 @@ export default function MyPosts() {
     try {
       const res = await api.get("/posts");
       setPosts(res.data ?? []);
-    } catch (error) {
-      console.error(error);
+    } catch (error: any) {
+        if (error.status === 503) {
+            alert("Server error, please try again later.");
+            router.replace("/homeAuth")
+        } else {
+            console.log(error)
+        }
     } finally {
       setLoading(false);
     }

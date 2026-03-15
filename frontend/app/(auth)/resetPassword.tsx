@@ -61,8 +61,14 @@ export default function ResetPassword({
         });
         router.push("/(auth)/signin");
       } catch (error: any) {
-        console.log(error);
-        setError("An error has occurred.");
+          if (error.status === 503) {
+              alert("Server error, please try again later.");
+              router.replace("/homeAuth")
+          } else {
+              console.log(error);
+              setError("An error has occurred.");
+          }
+
       } finally {
         setLoading(false);
       }

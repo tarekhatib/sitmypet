@@ -73,8 +73,13 @@ const PostDetails = () => {
             const res = await api.delete(`/posts/${postId}`);
             await SecureStore.setItemAsync("deletedPost", "true");
             router.back();
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setDeleting(false);
         }
@@ -112,8 +117,12 @@ const PostDetails = () => {
 
         try {
             await api.post(`/sitter/posts/${post.id}/toggle-save`);
-        } catch (e) {
-            console.log(e);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+            } else {
+                console.log(error)
+            }
         }
     };
 
@@ -132,8 +141,8 @@ const PostDetails = () => {
             } else {
                 console.log("Mail app is not available on this device (simulator issue).");
             }
-        } catch (e) {
-            console.log(e);
+        } catch (error: any) {
+            console.log(error);
         }
     };
 
@@ -152,8 +161,12 @@ const PostDetails = () => {
             try {
                 const res = await api.delete(`/applications/withdraw/${post?.id}`);
                 setIsApplied(false);
-            } catch (e) {
-                console.log(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setApplying(false);
             }
@@ -161,8 +174,12 @@ const PostDetails = () => {
             try {
                 const res = await api.post(`/applications/apply/${post?.id}`);
                 setIsApplied(true);
-            } catch (e) {
-                console.log(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setApplying(false);
             }
@@ -180,8 +197,13 @@ const PostDetails = () => {
             const res = await api.get(`/posts/${postId}`);
             setExpired(new Date(res.data.scheduledTime) < new Date());
             setPost(res.data);
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setLoading(false);
         }

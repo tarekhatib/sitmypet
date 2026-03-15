@@ -122,8 +122,13 @@ export default function Sitter() {
                 setClientFound(res.data.recentSitters ?? []);
                 setBookingFound(res.data.todaysBookings ?? []);
             }
-        } catch (error) {
-            console.log(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setIsLoading(false);
         }
@@ -139,8 +144,13 @@ export default function Sitter() {
         try {
             const res = await api.get("users/me")
             setUser(res.data);
-        } catch (e) {
-            console.log(e);
+        } catch (e: any) {
+            if (e.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(e)
+            }
         }
     }
 
@@ -151,8 +161,13 @@ export default function Sitter() {
             setRole(role);
             const profileImageUrl = await SecureStore.getItemAsync("profileImageUrl") as string;
             setCachedUser({firstname: fname, profileImageUrl})
-        } catch (e) {
-            console.log(e);
+        } catch (e: any) {
+            if (e.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(e)
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import SitterNearYouCardLoading from "@/components/SitterNearYouCardLoading";
 import TodaysBookingCard from "@/components/TodaysBookingCard";
 import TodaysBookingCardLoading from "@/components/TodaysBookingCardLoading";
 import GlobalBookingCard from "@/components/GlobalBookingCard";
+import {router} from "expo-router";
 
 interface Appointment {
     id: string;
@@ -54,8 +55,13 @@ const TodaysBookings = () => {
                 );
                 setCompleted(pastBookings);
                 setUnCompleted(futureBookings);
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }

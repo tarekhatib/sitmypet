@@ -41,7 +41,7 @@ const UploadDocument = () => {
 
                 await uploadIdDocument(picked);
             }
-        } catch (e) {
+        } catch (e: any) {
             setError("Failed to pick document");
         } finally {
             setDocLoading(false);
@@ -71,7 +71,12 @@ const UploadDocument = () => {
                 setError("Document not recognized. Use a clearer photo of your Lebanese ID/Passport.");
             }
         } catch (err: any) {
-            setError("Failed to upload document. Please check your connection.");
+            if (err.status === 503) {
+                alert("Server error, please try again later.");
+            } else {
+                console.log(error)
+                setError("Failed to upload document. Please check your connection.");
+            }
         } finally {
             setDocLoading(false);
         }

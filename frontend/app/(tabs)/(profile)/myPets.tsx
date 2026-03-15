@@ -33,8 +33,13 @@ export default function MyPets() {
                 try {
                     const res = await api.get("/owner/pets");
                     setPets(res.data);
-                } catch (e) {
-                    console.error(e);
+                } catch (e: any) {
+                    if (e.status === 503) {
+                        alert("Server error, please try again later.");
+                        router.replace("/homeAuth")
+                    } else {
+                        console.log(e)
+                    }
                 } finally {
                     setLoading(false);
                 }
@@ -48,8 +53,13 @@ export default function MyPets() {
             setDeleting({deleting: true, petId: petId});
             const res = await api.delete(`/owner/pets/${petId}`);
             setPets(pets.filter((pet) => pet.id !== petId));
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setDeleting({deleting: false, petId: ""});
         }

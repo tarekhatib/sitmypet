@@ -99,6 +99,9 @@ const EditProfile = () => {
                 setLoading(false);
                 if (e.status === 400) {
                     setStatus({type: "error", message: "Invalid image format or size."});
+                }else if (e.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
                 } else {
                     setStatus({type: "error", message: "An error has occurred."});
                 }
@@ -112,8 +115,14 @@ const EditProfile = () => {
                 location: userLocation
             });
             await SecureStore.setItemAsync("profileImageUrl", res.data.profileImageUrl as string);
-        } catch (e) {
-            setStatus({type: "error", message: "An error has occurred."});
+        } catch (e: any) {
+            if (e.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(e)
+                setStatus({type: "error", message: "An error has occurred."});
+            }
         } finally {
             setLoading(false);
         }
@@ -128,8 +137,13 @@ const EditProfile = () => {
             try {
                 const res = await api.get("/locations");
                 setLocations(res.data);
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             }
         };
         const temp = async () => {
@@ -138,8 +152,13 @@ const EditProfile = () => {
                 setUser(res.data);
                 setUserLocation(res.data.location?.name)
                 setImageUri(res.data.profileImageUrl || "https://pub-4f8704924751443bbd3260d113d11a8f.r2.dev/uploads/pfps/default_pfp.png")
-            } catch (e) {
-                console.error(e);
+            } catch (e: any) {
+                if (e.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(e)
+                }
             } finally {
                 setGettingProfile(false);
             }

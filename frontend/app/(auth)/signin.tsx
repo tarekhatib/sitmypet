@@ -55,7 +55,11 @@ const Signin = () => {
         } else if (error.status === 403) {
           await SecureStore.setItemAsync("email", String(formData.email));
           router.push("/(auth)/verifyEmail");
-        } else {
+        } else if (error.status === 503) {
+              alert("Server error, please try again later.");
+              router.replace("/homeAuth")
+          }
+        else {
           setError("An error has occurred, please try again later.");
         }
       } finally {

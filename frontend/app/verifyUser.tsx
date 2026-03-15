@@ -16,8 +16,12 @@ export default function VerifyUser() {
                     router.replace("/(auth)/uploadDocument");
                     return;
                 }
-            } catch (e) {
-                console.log(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }

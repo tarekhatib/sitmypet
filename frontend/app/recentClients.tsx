@@ -3,6 +3,7 @@ import React, {useEffect, useState} from "react";
 import {FlatList, Image, ScrollView, Text, View} from "react-native";
 import {SafeAreaView} from "react-native-safe-area-context";
 import api from "@/config/api";
+import {router} from "expo-router";
 
 type ClientHistory = {
     id: string;
@@ -58,8 +59,13 @@ const TodaysBookings = () => {
                     return dateB - dateA;
                   })
                 );
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }

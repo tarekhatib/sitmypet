@@ -118,8 +118,13 @@ const UserProfile = () => {
                 if (res.data.previousRating) {
                     fillStars(res.data.previousRating - 1);
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }

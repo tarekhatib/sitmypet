@@ -73,7 +73,10 @@ const UploadPFP = () => {
     } catch (e: any) {
       if (e.status === 400) {
         setError("Invalid image format or size.");
-      } else {
+      } if (e.status === 503) {
+            alert("Server error, please try again later.");
+        } else {
+          console.log(e)
         setError("An error has occurred.");
       }
     } finally {

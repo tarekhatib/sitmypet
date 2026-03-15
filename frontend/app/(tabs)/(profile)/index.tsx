@@ -40,7 +40,7 @@ export default function Index() {
       await SecureStore.deleteItemAsync("isVerified");
       router.push("/(auth)/signin");
     } catch (error) {
-      console.error("Failed to clear auth data:", error);
+      console.log("Failed to clear auth data:", error);
     }
   }
 

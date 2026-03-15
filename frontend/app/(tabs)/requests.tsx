@@ -46,8 +46,13 @@ const Requests = () => {
             try {
                 const res = await api.get("/owner/requests");
                 setRequests(res.data);
-            } catch (e) {
-                console.error(e);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setFetching(false);
             }
@@ -61,8 +66,13 @@ const Requests = () => {
             setRejecting({appId: appId, rejecting: true});
             const res = await api.post(`/applications/${appId}/reject`);
             setRequests(requests.filter((req) => req.id !== appId));
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setRejecting({appId: "", rejecting: false});
         }
@@ -74,8 +84,13 @@ const Requests = () => {
             setAccepting({appId: appId, accepting: true});
             const res = await api.post(`/applications/${appId}/accept`);
             setRequests(requests.filter((req) => req.post.id !== postId));
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             setAccepting({appId: "", accepting: false});
         }

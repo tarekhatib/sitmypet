@@ -86,8 +86,13 @@ export default function Explore() {
 
             setHasMore(requests.length > 0);
             setPage(pageNumber + 1);
-        } catch (error) {
-            console.error(error);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+                router.replace("/homeAuth")
+            } else {
+                console.log(error)
+            }
         } finally {
             isLoadMore ? setLoadingMore(false) : setLoading(false);
         }
@@ -104,8 +109,13 @@ export default function Explore() {
             try {
                 const res = await api.get("/locations");
                 setLocations(res.data);
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             }
         };
         fetchLocations();

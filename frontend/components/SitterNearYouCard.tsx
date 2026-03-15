@@ -31,8 +31,12 @@ const SitterNearYouCard = (props: NearbyRequest) => {
         setIsSaved(!isSaved);
         try {
             const res = await api.post(`/sitter/posts/${props.id}/toggle-save`);
-        } catch (e) {
-            console.log(e);
+        } catch (error: any) {
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+            } else {
+                console.log(error)
+            }
         } finally {
             props.onUnsave && props.onUnsave();
         }

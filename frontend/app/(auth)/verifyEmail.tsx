@@ -127,7 +127,12 @@ export default function VerifyEmail({
                 );
                 router.replace(path);
             } catch (error: any) {
-                setError("Invalid OTP, please try again.");
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                } else {
+                    console.log(error)
+                    setError("Invalid OTP, please try again.");
+                }
             } finally {
                 setLoading(false);
             }
@@ -144,7 +149,12 @@ export default function VerifyEmail({
             });
             startResendCooldown();
         } catch (error: any) {
-            setError("Please wait before resending another OTP.");
+            if (error.status === 503) {
+                alert("Server error, please try again later.");
+            } else {
+                console.log(error)
+                setError("Please wait before resending another OTP.");
+            }
         }
     };
 

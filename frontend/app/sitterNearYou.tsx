@@ -5,6 +5,7 @@ import {SafeAreaView} from "react-native-safe-area-context";
 import * as SecureStore from "expo-secure-store";
 import api from "@/config/api";
 import SitterNearYouCardLoading from "@/components/SitterNearYouCardLoading";
+import {router} from "expo-router";
 
 type Service = {
     id: string;
@@ -35,8 +36,13 @@ const SitterNearYou = () => {
             try {
                 const res = await api.get("/sitter/home");
                 setNearYouFound(res.data.nearbyPosts);
-            } catch (error) {
-                console.error(error);
+            } catch (error: any) {
+                if (error.status === 503) {
+                    alert("Server error, please try again later.");
+                    router.replace("/homeAuth")
+                } else {
+                    console.log(error)
+                }
             } finally {
                 setLoading(false);
             }

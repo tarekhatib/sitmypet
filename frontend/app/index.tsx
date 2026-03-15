@@ -39,7 +39,7 @@ async function checkUser(): Promise<number> {
         return 0;
     }
   } catch (error) {
-    console.error("Error checking auth:", error);
+    console.log("Error checking auth:", error);
     return 0;
   }
 }

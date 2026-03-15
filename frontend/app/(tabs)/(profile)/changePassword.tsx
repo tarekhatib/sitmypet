@@ -53,6 +53,8 @@ export default function ChangePassword({
 
                 if (error.status === 401 || error.status === 403 || error.status === 409) {
                     setError("Old password is incorrect.");
+                } else if (error.status === 503) {
+                    alert("Server error, please try again later.");
                 } else {
                     setError("An error has occurred.");
                 }
