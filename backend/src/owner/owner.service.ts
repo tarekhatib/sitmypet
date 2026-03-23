@@ -215,40 +215,15 @@ export class OwnerService {
 
   async uploadPetImage(
     ownerId: string,
-    petId: string,
     file: Express.Multer.File,
     r2Service: R2Service,
   ) {
-    const pet = await this.prisma.pet.findUnique({
-      where: { id: petId },
-    });
-
-    if (!pet) {
-      throw new NotFoundException(`Pet with ID ${petId} not found`);
-    }
-
-    if (pet.ownerId !== ownerId) {
-      throw new ForbiddenException('You can only update your own pets');
-    }
-
-    if (pet.imageUrl) {
-      const oldKey = r2Service.extractKeyFromUrl(pet.imageUrl);
-      if (oldKey) {
-        await r2Service.delete(oldKey);
-      }
-    }
-
     const uploaded = await r2Service.upload(
       file.buffer,
       file.originalname,
       file.mimetype,
       'uploads/pet_pfps',
     );
-
-    await this.prisma.pet.update({
-      where: { id: petId },
-      data: { imageUrl: uploaded.url },
-    });
 
     return { imageUrl: uploaded.url };
   }

@@ -70,10 +70,9 @@ export class OwnerController {
     return this.ownerService.deletePet(req.user.sub, id, this.r2Service);
   }
 
-  @Post('pets/:id/upload-image')
+  @Post('pets/upload-image')
   @UseInterceptors(FileInterceptor('file'))
   async uploadPetImage(
-    @Param('id') id: string,
     @Req() req: { user: { sub: string } },
     @UploadedFile(
       new ParseFilePipe({
@@ -88,7 +87,6 @@ export class OwnerController {
 
     return this.ownerService.uploadPetImage(
       req.user.sub,
-      id,
       file,
       this.r2Service,
     );
