@@ -5,5 +5,10 @@
   "dependencies": {
     "expo": "^54.0.31",
     "expo-image-picker": "~17.0.10"
+  },
+  "scripts": {
+    "build": "nest build",
+    "start": "node dist/main.js",
+    "start:prod": "node dist/main.js"
   }
 }
